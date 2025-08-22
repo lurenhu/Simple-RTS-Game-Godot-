@@ -1,0 +1,69 @@
+[gd_scene load_steps=8 format=3 uid="uid://c5sk7rn0ssj20"]
+
+[ext_resource type="Script" uid="uid://qxk2aajousmr" path="res://scripts/Resources.gd" id="1_214j1"]
+[ext_resource type="Texture2D" uid="uid://bsiues8huwpg5" path="res://art/kenney_sci-fi-rts/PNG/Retina/Environment/scifiEnvironment_19.png" id="1_lutej"]
+[ext_resource type="Texture2D" uid="uid://cp31ac0l2s3h0" path="res://art/kenney_sci-fi-rts/PNG/Retina/Environment/scifiEnvironment_17.png" id="2_214j1"]
+[ext_resource type="PackedScene" uid="uid://cnbfmjchr3geg" path="res://scene/clear_block.tscn" id="2_gksm2"]
+[ext_resource type="Texture2D" uid="uid://cjcp3nleiikgb" path="res://art/kenney_sci-fi-rts/PNG/Retina/Tile/scifiTile_42.png" id="3_y4dod"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smf0o"]
+size = Vector2(80, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v2gmf"]
+size = Vector2(80, 80)
+
+[node name="Tree" type="Area2D"]
+script = ExtResource("1_214j1")
+clearBlock = ExtResource("2_gksm2")
+tree = true
+
+[node name="Ground" type="Sprite2D" parent="."]
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("3_y4dod")
+
+[node name="Sprites" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprites"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_lutej")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprites"]
+position = Vector2(-20, -20)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_214j1")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Sprites"]
+position = Vector2(20, 20)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_214j1")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Sprites"]
+position = Vector2(20, -20)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_214j1")
+
+[node name="Sprite2D5" type="Sprite2D" parent="Sprites"]
+position = Vector2(-20, 20)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_214j1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_smf0o")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_v2gmf")
+
+[node name="ButtonSelect" type="Button" parent="."]
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_type_variation = &"FlatButton"
+
+[node name="TimerRemoveNav" type="Timer" parent="."]
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="pressed" from="ButtonSelect" to="." method="_on_button_select_pressed"]
+[connection signal="timeout" from="TimerRemoveNav" to="." method="_on_timer_remove_nav_timeout"]

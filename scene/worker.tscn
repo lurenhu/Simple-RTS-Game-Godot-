@@ -1,0 +1,209 @@
+[gd_scene load_steps=12 format=3 uid="uid://ojcd2ihuf2om"]
+
+[ext_resource type="Script" uid="uid://ci158it6j2ofs" path="res://scripts/worker.gd" id="1_r4fl1"]
+[ext_resource type="Texture2D" uid="uid://dug52tv5cm1c0" path="res://art/kenney_space-shooter-redux/PNG/playerShip2_blue.png" id="1_slm4r"]
+[ext_resource type="PackedScene" uid="uid://ch45jyq87ht4p" path="res://scene/laser.tscn" id="2_od5mq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mswub"]
+radius = 13.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hybxs"]
+radius = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v2gmf"]
+radius = 12.0416
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mswub"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hybxs"]
+bg_color = Color(0, 1, 0, 1)
+
+[sub_resource type="Animation" id="Animation_r4fl1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Area2D2Tool:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Area2D2Tool/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Area2D2Tool/CollisionShape2D:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_slm4r"]
+resource_name = "use_tool"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Area2D2Tool:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Area2D2Tool/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Area2D2Tool/CollisionShape2D:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(2, 2), Vector2(2, 2)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.49, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_od5mq"]
+_data = {
+&"RESET": SubResource("Animation_r4fl1"),
+&"use_tool": SubResource("Animation_slm4r")
+}
+
+[node name="Worker" type="CharacterBody2D"]
+z_index = 30
+collision_layer = 3
+collision_mask = 3
+motion_mode = 1
+safe_margin = 5.0
+script = ExtResource("1_r4fl1")
+laser = ExtResource("2_od5mq")
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="BackSprite" type="Sprite2D" parent="Body"]
+visible = false
+clip_children = 2
+rotation = 1.5708
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_slm4r")
+
+[node name="ColorRect" type="ColorRect" parent="Body/BackSprite"]
+offset_left = -59.0
+offset_top = -44.0
+offset_right = 59.0
+offset_bottom = 52.0
+color = Color(0, 0.647059, 1, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Body"]
+rotation = 1.5708
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_slm4r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4, 0)
+shape = SubResource("CircleShape2D_mswub")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-4, 0)
+shape = SubResource("CircleShape2D_hybxs")
+
+[node name="Area2D2Tool" type="Area2D" parent="." groups=["worker_tools"]]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2Tool"]
+position = Vector2(-4, 0)
+shape = SubResource("CircleShape2D_v2gmf")
+disabled = true
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = -25.0
+offset_top = -30.0
+offset_right = 25.0
+offset_bottom = -25.0
+theme_override_styles/background = SubResource("StyleBoxFlat_mswub")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hybxs")
+max_value = 10.0
+value = 10.0
+show_percentage = false
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 25.0
+simplify_path = true
+avoidance_enabled = true
+debug_enabled = true
+
+[node name="TimerStillToolLong" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="TimerShoot" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_od5mq")
+}
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="timeout" from="TimerShoot" to="." method="_on_timer_shoot_timeout"]

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5cw23g3ri7hg"]
+
+[ext_resource type="PackedScene" uid="uid://dixi8iav7i2ip" path="res://scene/unit_type_one.tscn" id="1_je8xr"]
+[ext_resource type="Texture2D" uid="uid://dv8vryqcb4eh8" path="res://art/kenney_space-shooter-redux/PNG/playerShip1_blue.png" id="2_t1wpb"]
+
+[node name="UnitTypeTwo" instance=ExtResource("1_je8xr")]
+speed = 75
+ranged_unit = true
+
+[node name="Sprite2D" parent="Body" index="1"]
+texture = ExtResource("2_t1wpb")

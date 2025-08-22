@@ -1,0 +1,203 @@
+[gd_scene load_steps=10 format=3 uid="uid://bg1uugds2uo51"]
+
+[ext_resource type="Script" uid="uid://frrbcoha7n7i" path="res://scripts/tower_center.gd" id="1_a1egt"]
+[ext_resource type="Texture2D" uid="uid://bqnhu5djeqinx" path="res://art/kenney_sci-fi-rts/PNG/Retina/Structure/scifiStructure_10.png" id="2_a1egt"]
+[ext_resource type="PackedScene" uid="uid://cnbfmjchr3geg" path="res://scene/clear_block.tscn" id="2_x2vwq"]
+[ext_resource type="PackedScene" uid="uid://ojcd2ihuf2om" path="res://scene/worker.tscn" id="3_44dxm"]
+[ext_resource type="Texture2D" uid="uid://dug52tv5cm1c0" path="res://art/kenney_space-shooter-redux/PNG/playerShip2_blue.png" id="3_x2vwq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smf0o"]
+size = Vector2(80, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v2gmf"]
+size = Vector2(80, 80)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v2gmf"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcbur"]
+bg_color = Color(0, 1, 0, 1)
+
+[node name="TowerCenter" type="Area2D"]
+script = ExtResource("1_a1egt")
+clearBlock = ExtResource("2_x2vwq")
+newWorker = ExtResource("3_44dxm")
+
+[node name="Ground" type="Sprite2D" parent="."]
+scale = Vector2(0.625, 0.625)
+
+[node name="Building" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Building"]
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("2_a1egt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_smf0o")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_v2gmf")
+disabled = true
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = -40.0
+offset_top = -52.0
+offset_right = 40.0
+offset_bottom = -46.0
+theme_override_styles/background = SubResource("StyleBoxFlat_v2gmf")
+theme_override_styles/fill = SubResource("StyleBoxFlat_jcbur")
+max_value = 10.0
+value = 10.0
+show_percentage = false
+metadata/_edit_use_anchors_ = true
+
+[node name="ButtonTC" type="Button" parent="."]
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_type_variation = &"FlatButton"
+metadata/_edit_use_anchors_ = true
+
+[node name="TimerWorker" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="TimerUIon" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="RemoveButton" type="Node2D" parent="CanvasLayer"]
+position = Vector2(0, 440)
+
+[node name="Image" type="Node2D" parent="CanvasLayer/RemoveButton"]
+position = Vector2(32, 24)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/RemoveButton/Image"]
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(1, 0, 0, 1)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/RemoveButton/Image/ColorRect"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 3.0
+offset_right = 38.0
+offset_bottom = 7.0
+rotation = 0.785398
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="CanvasLayer/RemoveButton/Image/ColorRect"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 26.0
+offset_right = 35.0
+offset_bottom = 30.0
+rotation = -0.785398
+color = Color(0, 0, 0, 1)
+
+[node name="Remove" type="Button" parent="CanvasLayer/RemoveButton/Image"]
+self_modulate = Color(1, 1, 1, 0.392157)
+offset_right = 32.0
+offset_bottom = 32.0
+
+[node name="AddWorkerButton" type="Node2D" parent="CanvasLayer"]
+position = Vector2(40, 440)
+
+[node name="Image" type="Node2D" parent="CanvasLayer/AddWorkerButton"]
+position = Vector2(32, 24)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/AddWorkerButton/Image"]
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 0, 1)
+
+[node name="AddWorker" type="Button" parent="CanvasLayer/AddWorkerButton/Image"]
+self_modulate = Color(1, 1, 1, 0.392157)
+offset_right = 32.0
+offset_bottom = 32.0
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/AddWorkerButton/Image"]
+position = Vector2(16, 16)
+scale = Vector2(0.266667, 0.266667)
+texture = ExtResource("3_x2vwq")
+
+[node name="q1" type="Node2D" parent="CanvasLayer"]
+visible = false
+position = Vector2(80, 475)
+
+[node name="Image" type="Node2D" parent="CanvasLayer/q1"]
+position = Vector2(32, 24)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/q1/Image"]
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/q1/Image"]
+position = Vector2(16, 16)
+scale = Vector2(0.266667, 0.266667)
+texture = ExtResource("3_x2vwq")
+
+[node name="q2" type="Node2D" parent="CanvasLayer"]
+visible = false
+position = Vector2(120, 475)
+
+[node name="Image" type="Node2D" parent="CanvasLayer/q2"]
+position = Vector2(32, 24)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/q2/Image"]
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/q2/Image"]
+position = Vector2(16, 16)
+scale = Vector2(0.266667, 0.266667)
+texture = ExtResource("3_x2vwq")
+
+[node name="q3" type="Node2D" parent="CanvasLayer"]
+visible = false
+position = Vector2(160, 475)
+
+[node name="Image" type="Node2D" parent="CanvasLayer/q3"]
+position = Vector2(32, 24)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/q3/Image"]
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/q3/Image"]
+position = Vector2(16, 16)
+scale = Vector2(0.266667, 0.266667)
+texture = ExtResource("3_x2vwq")
+
+[node name="q4" type="Node2D" parent="CanvasLayer"]
+visible = false
+position = Vector2(200, 475)
+
+[node name="Image" type="Node2D" parent="CanvasLayer/q4"]
+position = Vector2(32, 24)
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/q4/Image"]
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0, 1, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/q4/Image"]
+position = Vector2(16, 16)
+scale = Vector2(0.266667, 0.266667)
+texture = ExtResource("3_x2vwq")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="pressed" from="ButtonTC" to="." method="_on_button_tc_pressed"]
+[connection signal="timeout" from="TimerWorker" to="." method="_on_timer_worker_timeout"]
+[connection signal="timeout" from="TimerUIon" to="." method="_on_timer_u_ion_timeout"]
+[connection signal="pressed" from="CanvasLayer/RemoveButton/Image/Remove" to="." method="_on_remove_pressed"]
+[connection signal="pressed" from="CanvasLayer/AddWorkerButton/Image/AddWorker" to="." method="_on_add_worker_pressed"]

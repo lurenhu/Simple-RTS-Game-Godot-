@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cs7nroe3uuwky"]
+
+[ext_resource type="PackedScene" uid="uid://qiqq1sgywqnq" path="res://scene/enemy_type_one.tscn" id="1_g4yp7"]
+[ext_resource type="Texture2D" uid="uid://cu2ekambqku4y" path="res://art/kenney_space-shooter-redux/PNG/playerShip1_orange.png" id="2_vu7hu"]
+
+[node name="EnemyTypeTwo" instance=ExtResource("1_g4yp7")]
+
+[node name="Sprite2D" parent="body" index="0"]
+texture = ExtResource("2_vu7hu")

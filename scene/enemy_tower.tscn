@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://b35uw7cugv1l4"]
+
+[ext_resource type="PackedScene" uid="uid://fg6652nvhbui" path="res://scene/enemy_house.tscn" id="1_vy685"]
+[ext_resource type="Texture2D" uid="uid://cy7xsnop8rq71" path="res://art/kenney_sci-fi-rts/PNG/Retina/Structure/scifiStructure_15.png" id="2_734be"]
+[ext_resource type="Script" uid="uid://csa38as7ovgt4" path="res://scripts/enemy_tower.gd" id="2_ndcx5"]
+[ext_resource type="PackedScene" uid="uid://ch45jyq87ht4p" path="res://scene/laser.tscn" id="3_ktl5e"]
+[ext_resource type="Texture2D" uid="uid://c0h5c3c3os8sr" path="res://art/kenney_space-shooter-redux/PNG/Parts/beam0.png" id="3_noaq2"]
+
+[node name="EnemyTower" instance=ExtResource("1_vy685")]
+script = ExtResource("2_ndcx5")
+laser = ExtResource("3_ktl5e")
+
+[node name="Sprite2D" parent="Building" index="0"]
+texture = ExtResource("2_734be")
+
+[node name="ColorRect" parent="Building/Sprite2D" index="0"]
+offset_left = -26.0
+offset_top = 24.0
+offset_right = 26.0
+offset_bottom = 32.0
+
+[node name="ColorRect2" parent="Building/Sprite2D" index="1"]
+offset_left = -26.0
+offset_top = -42.0
+offset_right = 26.0
+offset_bottom = -34.0
+
+[node name="turrent" type="Sprite2D" parent="Building" index="1"]
+texture = ExtResource("3_noaq2")
+
+[node name="TimerShoot" type="Timer" parent="." index="10"]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="TimerShoot" to="." method="_on_timer_shoot_timeout"]

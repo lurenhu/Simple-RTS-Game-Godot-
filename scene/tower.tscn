@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=3 uid="uid://c1fr0tkrcry57"]
+
+[ext_resource type="PackedScene" uid="uid://dgqr1ibqfxwll" path="res://scene/house.tscn" id="1_3l8j4"]
+[ext_resource type="Texture2D" uid="uid://b3mej00yxb4xu" path="res://art/kenney_sci-fi-rts/PNG/Retina/Structure/scifiStructure_14.png" id="2_jlhg4"]
+[ext_resource type="Script" uid="uid://d053v7jc42tfx" path="res://scripts/tower.gd" id="2_upbbx"]
+[ext_resource type="PackedScene" uid="uid://ch45jyq87ht4p" path="res://scene/laser.tscn" id="3_tawd1"]
+[ext_resource type="Texture2D" uid="uid://c0h5c3c3os8sr" path="res://art/kenney_space-shooter-redux/PNG/Parts/beam0.png" id="3_upbbx"]
+
+[node name="Tower" instance=ExtResource("1_3l8j4")]
+script = ExtResource("2_upbbx")
+laser = ExtResource("3_tawd1")
+
+[node name="Sprite2D" parent="Building" index="0"]
+texture = ExtResource("2_jlhg4")
+
+[node name="turret" type="Sprite2D" parent="Building/Sprite2D" index="0"]
+visible = false
+texture = ExtResource("3_upbbx")
+
+[node name="TimerShoot" type="Timer" parent="." index="12"]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="TimerShoot" to="." method="_on_timer_shoot_timeout"]

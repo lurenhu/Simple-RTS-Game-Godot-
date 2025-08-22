@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://coa1ml18uthac"]
+
+[ext_resource type="PackedScene" uid="uid://mdvh8pemw8wf" path="res://scene/new_tower_center.tscn" id="1_l405b"]
+[ext_resource type="Script" uid="uid://cw17ysyb370i8" path="res://scripts/farm.gd" id="2_r74s6"]
+[ext_resource type="Texture2D" uid="uid://bff66r1gtql8q" path="res://art/kenney_sci-fi-rts/PNG/Default size/Tile/scifiTile_05.png" id="2_r867v"]
+[ext_resource type="Texture2D" uid="uid://1mobbi4mi1q8" path="res://art/kenney_sci-fi-rts/PNG/Default size/Environment/scifiEnvironment_16.png" id="3_r74s6"]
+
+[node name="Farm" instance=ExtResource("1_l405b")]
+script = ExtResource("2_r74s6")
+
+[node name="Sprite2D" parent="Building" index="0"]
+visible = false
+
+[node name="FarmDirt" type="Node2D" parent="Building" index="1"]
+
+[node name="Sprite2D" type="Sprite2D" parent="Building/FarmDirt" index="0"]
+scale = Vector2(1.25, 1.25)
+texture = ExtResource("2_r867v")
+
+[node name="FarmPlant" type="Node2D" parent="Building" index="2"]
+visible = false
+
+[node name="Sprite2D" type="Sprite2D" parent="Building/FarmPlant" index="0"]
+texture = ExtResource("3_r74s6")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Building/FarmPlant" index="1"]
+position = Vector2(24, 4)
+texture = ExtResource("3_r74s6")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Building/FarmPlant" index="2"]
+position = Vector2(-26, -6)
+texture = ExtResource("3_r74s6")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Building/FarmPlant" index="3"]
+position = Vector2(-5, 25)
+texture = ExtResource("3_r74s6")
+
+[node name="Sprite2D5" type="Sprite2D" parent="Building/FarmPlant" index="4"]
+position = Vector2(5, -25)
+texture = ExtResource("3_r74s6")

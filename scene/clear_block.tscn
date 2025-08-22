@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnbfmjchr3geg"]
+
+[ext_resource type="Texture2D" uid="uid://biy58p7qmrg4j" path="res://art/kenney_sci-fi-rts/PNG/Retina/Tile/scifiTile_13.png" id="1_2bxir"]
+
+[node name="ClearBlock" type="Sprite2D"]
+self_modulate = Color(1, 1, 1, 0)
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("1_2bxir")
