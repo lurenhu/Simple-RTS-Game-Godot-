@@ -98,7 +98,7 @@ func _physics_process(delta: float) -> void:
 	if selected == true and Global.newWorkerTarget != null:
 		turnOffAllJobs();
 		target = Global.newWorkerTarget;
-		if Global.newWorkerTargetJob == "build":
+		if Global.newWorkerTargetJob == Global.JOB.building:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = true;
@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == "chop_wood":
+		if Global.newWorkerTargetJob == Global.JOB.chop_wood:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -114,7 +114,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == "mine_gold":
+		if Global.newWorkerTargetJob == Global.JOB.mine_gold:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -122,7 +122,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = true;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == "farm":
+		if Global.newWorkerTargetJob == Global.JOB.farm:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -130,7 +130,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = true;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == "attack_unit":
+		if Global.newWorkerTargetJob == Global.JOB.attack_unit:
 			jobAttack = true;
 			jobAttackUnit = true;
 			jobBuilding = false;
@@ -138,7 +138,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == "attack_building":
+		if Global.newWorkerTargetJob == Global.JOB.attack_building:
 			jobAttack = true;
 			jobAttackUnit = false;
 			jobBuilding = false;

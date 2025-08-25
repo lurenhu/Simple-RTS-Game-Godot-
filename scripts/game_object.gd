@@ -3,7 +3,7 @@ extends Node2D
 var dragging = false;
 var dragStart = Vector2.ZERO;
 var selectRect = RectangleShape2D.new();
-var selecteds = [];
+var selecteds = [];## 存储鼠标框选中的游戏对象
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -22,12 +22,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			dragging = false;
 			queue_redraw();
 			var dragEnd = get_global_mouse_position();
-			selectRect.extents = abs(dragEnd - dragStart) / 2;
+			selectRect.size = abs(dragEnd - dragStart);
 			var space = get_world_2d().direct_space_state;
 			var q = PhysicsShapeQueryParameters2D.new();
-			q.shape = selectRect;
-			q.collision_mask = 2;
-			q.transform = Transform2D(0, (dragEnd + dragStart) / 2);
+			q.shape = selectRect;# 检查区域的形状
+			q.collision_mask = 2;# 检查区域的碰撞层级
+			q.transform = Transform2D(0, (dragEnd + dragStart) / 2);# 检查区域的位置
 			selecteds = space.intersect_shape(q);
 			for item in selecteds:
 				item.collider.selected = true;

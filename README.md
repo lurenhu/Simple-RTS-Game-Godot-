@@ -29,3 +29,19 @@
 4. 环境
    1. 森林：可以被工兵采集获得木材
    2. 金矿：可以被工兵采集获得金矿
+
+## 解决方案
+
+### 需求描述
+
+- 玩家可以通过在游戏界面进行框选操作来框选游戏对象
+
+### 实现思路
+
+- **PhysicsShapeQueryParameters2D** 类进行2D游戏场景的查询操作，记作p
+    `````` py
+    q.shape = selectRect;# 检查区域的形状
+    q.collision_mask = 2;# 检查区域的碰撞层级
+    q.transform = Transform2D(0, (dragEnd + dragStart) / 2);# 检查区域的位置
+    ``````
+- **get_world_2d().direct_space_state.intersect_shape(p)** 执行查询操作返回2D世界中查询结果
