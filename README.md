@@ -38,10 +38,50 @@
 
 ### 实现思路
 
-- **PhysicsShapeQueryParameters2D** 类进行2D游戏场景的查询操作，记作p
+- **PhysicsShapeQueryParameters2D** 类进行2D游戏场景的查询操作，记作q
     `````` py
     q.shape = selectRect;# 检查区域的形状
     q.collision_mask = 2;# 检查区域的碰撞层级
     q.transform = Transform2D(0, (dragEnd + dragStart) / 2);# 检查区域的位置
     ``````
-- **get_world_2d().direct_space_state.intersect_shape(p)** 执行查询操作返回2D世界中查询结果
+- **get_world_2d().direct_space_state.intersect_shape(q)** 执行查询操作返回2D世界中查询结果
+
+### 需求方案
+
+- 实现对选中游戏对象进行寻路与自动避障
+
+### 实现思路
+
+- **NavigationAgent2D** 类进行导航代理，实现自动避障
+- 定义一个target变量表示移动的目标位置，当目标存在时就计算路径，目标不存在就原地不动
+    `````` py
+    func moveTowardTarget():
+        var _t = self;
+
+        ## 计算得出寻路路径
+        _t.velocity = Vector2.ZERO;
+        if target != null:
+            var dir = to_local(navAgent.get_next_path_position()).normalized();
+            av = avoid();
+            _t.velocity = (dir + av * avoidWeight).normalized() * speed;
+            if position.distance_to(target) <= targetRadius:
+                target = null;
+        
+        ## 启用引擎自带的寻路代理避障功能
+        if navAgent.avoidance_enabled == true:
+            navAgent.velocity = _t.velocity;
+        else :
+            _t._on_navigation_agent_2d_velocity_computed(_t.velocity);
+        
+        move_and_slide();
+
+    ## 避障
+    func avoid():
+        var result = Vector2.ZERO;
+        var neighbors = $Area2D.get_overlapping_bodies();
+        if neighbors:
+            for n in neighbors:
+                result += n.position.direction_to(position);
+            result /= neighbors.size();
+        return result.normalized();
+    ``````

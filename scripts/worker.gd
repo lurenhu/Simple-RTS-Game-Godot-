@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var speed = 150;
 @export var laser: PackedScene;
 
-var targetRadius = 10;
+var targetRadius = 20;
 var av = Vector2.ZERO;
 var avoidWeight = 0.1;
 
@@ -57,31 +57,27 @@ func avoid():
 		result /= neighbors.size();
 	return result.normalized();
 
-func onNavigationAgent2dVelocityComputed(safeVelocity: Vector2):
-	velocity = safeVelocity;
-
 func makePath():
 	if target != null:
 		navAgent.target_position = target;
 
 func moveTowardTarget():
-	velocity = Vector2.ZERO;
+	var _t = self;
+
+	_t.velocity = Vector2.ZERO;
 	if target != null:
-		velocity = position.direction_to(target);
 		var dir = to_local(navAgent.get_next_path_position()).normalized();
-		velocity = dir * speed;
+		av = avoid();
+		_t.velocity = (dir + av * avoidWeight).normalized() * speed;
 		if position.distance_to(target) <= targetRadius:
 			target = null;
-	av = avoid();
-	velocity = (velocity + av * avoidWeight).normalized() * speed;
 
 	if navAgent.avoidance_enabled == true:
-		navAgent.set_velocity(velocity);
-	else:
-		onNavigationAgent2dVelocityComputed(velocity);
+		navAgent.velocity = _t.velocity;
+	else :
+		_t._on_navigation_agent_2d_velocity_computed(_t.velocity);
 	
 	move_and_slide();
-	var nextPathPosition = navAgent.get_next_path_position();
 	
 func _ready() -> void:
 	Global.goodUnit += 1;
@@ -375,3 +371,8 @@ func checkIfNoMoreResourcesForJob():
 
 func _on_timer_shoot_timeout() -> void:
 	ableToShoot = true;
+
+
+func _on_navigation_agent_2d_velocity_computed(safe_velocity: Vector2) -> void:
+	var _t = self;
+	_t.velocity = safe_velocity;

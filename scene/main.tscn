@@ -2971,7 +2971,7 @@ tile_set = SubResource("TileSet_gtqqq")
 script = ExtResource("3_wscrc")
 
 [node name="Worker" parent="GameObject" instance=ExtResource("4_mswub")]
-position = Vector2(-278, -91)
+position = Vector2(-229, -12)
 
 [node name="TowerCenter" parent="GameObject" instance=ExtResource("5_smf0o")]
 position = Vector2(-200, 40)
