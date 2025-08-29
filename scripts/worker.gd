@@ -1,5 +1,5 @@
 extends CharacterBody2D
-
+#-------------------变量--------------------
 @onready var navAgent := $NavigationAgent2D as NavigationAgent2D
 @export var speed = 150;
 @export var laser: PackedScene;
@@ -48,24 +48,37 @@ func setSelected(value):
 func setTarget(value):
 	target = value;
 
-func avoid():
-	var result = Vector2.ZERO;
-	var neighbors = $Area2D.get_overlapping_bodies();
-	if neighbors:
-		for n in neighbors:
-			result += n.position.direction_to(position);
-		result /= neighbors.size();
-	return result.normalized();
+func _ready() -> void:
+	Global.goodUnit += 1;
+	Global.populationCount += 1;
 
-func makePath():
-	if target != null:
-		navAgent.target_position = target;
+	var characters = "abcdefghijklmnopqrstuvwsyz";
+	new_id = Global.generateId(characters, 10);
+	add_to_group("unit");
 
+func _physics_process(delta: float) -> void:
+	var _t = self;
+
+	_t.moveTowardTarget();
+
+	_t.check_player_job();
+
+	_t.check_player_use_tool();
+
+	_t.check_player_back();
+
+	_t.check_if_no_more_resources_for_job();
+
+	_t.player_attack();
+
+#-------------------业务逻辑--------------------
+## 利用导航系统移动到目标点
 func moveTowardTarget():
 	var _t = self;
 
 	_t.velocity = Vector2.ZERO;
 	if target != null:
+		navAgent.target_position = target;
 		var dir = to_local(navAgent.get_next_path_position()).normalized();
 		av = avoid();
 		_t.velocity = (dir + av * avoidWeight).normalized() * speed;
@@ -78,19 +91,21 @@ func moveTowardTarget():
 		_t._on_navigation_agent_2d_velocity_computed(_t.velocity);
 	
 	move_and_slide();
-	
-func _ready() -> void:
-	Global.goodUnit += 1;
-	Global.populationCount += 1;
 
-	var characters = "abcdefghijklmnopqrstuvwsyz";
-	new_id = Global.generateId(characters, 10);
-	add_to_group("unit");
+	if velocity != Vector2(0, 0):
+		$Body.look_at($NavigationAgent2D.get_next_path_position())
 
-func _physics_process(delta: float) -> void:
-	makePath();
-	moveTowardTarget();
+func avoid():
+	var result = Vector2.ZERO;
+	var neighbors = $Area2D.get_overlapping_bodies();
+	if neighbors:
+		for n in neighbors:
+			result += n.position.direction_to(position);
+		result /= neighbors.size();
+	return result.normalized();
 
+## 检查玩家职业
+func check_player_job():
 	if selected == true and Global.newWorkerTarget != null:
 		turnOffAllJobs();
 		target = Global.newWorkerTarget;
@@ -102,7 +117,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == Global.JOB.chop_wood:
+		elif Global.newWorkerTargetJob == Global.JOB.chop_wood:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -110,7 +125,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == Global.JOB.mine_gold:
+		elif Global.newWorkerTargetJob == Global.JOB.mine_gold:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -118,7 +133,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = true;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == Global.JOB.farm:
+		elif Global.newWorkerTargetJob == Global.JOB.farm:
 			jobAttack = false;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -126,7 +141,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = true;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == Global.JOB.attack_unit:
+		elif Global.newWorkerTargetJob == Global.JOB.attack_unit:
 			jobAttack = true;
 			jobAttackUnit = true;
 			jobBuilding = false;
@@ -134,7 +149,7 @@ func _physics_process(delta: float) -> void:
 			jobFarmingFarm = false;
 			jobMiningGold = false;
 			targetId = Global.newWorkerTargetId;
-		if Global.newWorkerTargetJob == Global.JOB.attack_building:
+		elif Global.newWorkerTargetJob == Global.JOB.attack_building:
 			jobAttack = true;
 			jobAttackUnit = false;
 			jobBuilding = false;
@@ -146,6 +161,8 @@ func _physics_process(delta: float) -> void:
 			findClosestSideOfTile();
 		selected = false;
 
+## 玩家前往采集物资
+func check_player_use_tool():
 	if usingWorkerTools == true:
 		speed = 0;
 		$AnimationPlayer.play("use_tool");
@@ -156,16 +173,25 @@ func _physics_process(delta: float) -> void:
 			usingWorkerTools = false;
 		speed = 150;
 
+
+## 玩家回收资源
+func check_player_back():
 	if (jobCuttingWood == true or jobMiningGold == true or jobFarmingFarm == true) and $TimerStillToolLong.time_left == 0 and velocity == Vector2(0, 0) and target == null:
 		usingWorkerTools = false;
 		findClosestTargetForJob();
 		resetStandStillTime();
 
-	checkIfNoMoreResourcesForJob();
+## 玩家血量处理
+func deal_health():
+	$ProgressBar.value = health;
 
-	if velocity != Vector2(0, 0):
-		$Body.look_at($NavigationAgent2D.get_next_path_position())
+	if health <= 0:
+		Global.enemyUnit -= 1;
+		Global.populationCount -= 1;
+		queue_free();
 
+## 玩家攻击
+func player_attack():
 	if jobAttack == true and target != null:
 		var distanceToEnemy = (target - global_position).length()
 		if distanceToEnemy <= 70:
@@ -210,13 +236,6 @@ func _physics_process(delta: float) -> void:
 				turnOffAllJobs();
 			speed = 150;
 
-	$ProgressBar.value = health;
-
-	if health <= 0:
-		Global.enemyUnit -= 1;
-		Global.populationCount -= 1;
-		queue_free();
-
 ## 找到瓦片边缘
 func findClosestSideOfTile():
 	if target != null and target.x < self.position.x and target.y < self.position.y:
@@ -231,49 +250,6 @@ func findClosestSideOfTile():
 	elif  target != null and target.x > self.position.x and target.y > self.position.y:
 		target.x = target.x - 40;
 		target.y = target.y - 40;
-
-
-func _on_area_2d_area_entered(area: Area2D) -> void:
-	if area.is_in_group("unbuilt_building") and jobBuilding and area.new_id == targetId:
-		usingWorkerTools = true;
-		$Body.look_at(area.position);
-	if area.is_in_group("built_building") and jobBuilding == true:
-		usingWorkerTools = false;
-		findClosestTargetForJob()
-		resetStandStillTime()
-	if area.is_in_group("tree") and jobCuttingWood == true and area.new_id == targetId:
-		usingWorkerTools = true;
-		$Body.look_at(area.position)
-	if area.is_in_group("gold") and jobMiningGold == true and area.new_id == targetId:
-		usingWorkerTools = true;
-		$Body.look_at(area.position);
-	if area.is_in_group("farm") and jobFarmingFarm == true and area.new_id == targetId:
-		usingWorkerTools = true;
-		$Body.look_at(area.position);
-	if area.is_in_group("town_center") and (jobCuttingWood == true or jobMiningGold == true or jobFarmingFarm == true):
-		Global.woodCount += woodGather;
-		Global.goldCount += goldGather;
-		Global.foodCount += foodGather;
-
-		woodGather = 0;
-		goldGather = 0;
-		foodGather = 0;
-		$Body.look_at(area.position)
-		goBackToTheResources();
-	if area.is_in_group("enemy_laser"):
-		health -= 1;
-		if targetId != area.owner_id:
-			turnOffAllJobs();
-			jobAttack = true;
-			jobAttackUnit = true;
-			targetId = area.owner_id;
-			$Body.look_at(area.position)
-			var allEnemy = get_tree().get_nodes_in_group("enemy")
-			for enemy in allEnemy:
-				if enemy.new_id == targetId:
-					target = enemy.position;
-					targetMiddleOfEnemy = target;
-		area.queue_free()
 
 func resetStandStillTime():
 	$TimerStillToolLong.start()
@@ -352,7 +328,7 @@ func turnOffAllJobs():
 	speed = 150;
 
 ## 检查是否还有(同类)资源
-func checkIfNoMoreResourcesForJob():
+func check_if_no_more_resources_for_job():
 	var lowestDistance = INF;
 	var allReources;
 	if jobBuilding == true:
@@ -368,10 +344,51 @@ func checkIfNoMoreResourcesForJob():
 	if allReources == null:
 		turnOffAllJobs();
 
+#-------------------信号处理--------------------
+func _on_area_2d_area_entered(area: Area2D) -> void:
+	if area.is_in_group("unbuilt_building") and jobBuilding and area.new_id == targetId:
+		usingWorkerTools = true;
+		$Body.look_at(area.position);
+	if area.is_in_group("built_building") and jobBuilding == true:
+		usingWorkerTools = false;
+		findClosestTargetForJob()
+		resetStandStillTime()
+	if area.is_in_group("tree") and jobCuttingWood == true and area.new_id == targetId:
+		usingWorkerTools = true;
+		$Body.look_at(area.position)
+	if area.is_in_group("gold") and jobMiningGold == true and area.new_id == targetId:
+		usingWorkerTools = true;
+		$Body.look_at(area.position);
+	if area.is_in_group("farm") and jobFarmingFarm == true and area.new_id == targetId:
+		usingWorkerTools = true;
+		$Body.look_at(area.position);
+	if area.is_in_group("town_center") and (jobCuttingWood == true or jobMiningGold == true or jobFarmingFarm == true):
+		Global.woodCount += woodGather;
+		Global.goldCount += goldGather;
+		Global.foodCount += foodGather;
+
+		woodGather = 0;
+		goldGather = 0;
+		foodGather = 0;
+		$Body.look_at(area.position)
+		goBackToTheResources();
+	if area.is_in_group("enemy_laser"):
+		health -= 1;
+		if targetId != area.owner_id:
+			turnOffAllJobs();
+			jobAttack = true;
+			jobAttackUnit = true;
+			targetId = area.owner_id;
+			$Body.look_at(area.position)
+			var allEnemy = get_tree().get_nodes_in_group("enemy")
+			for enemy in allEnemy:
+				if enemy.new_id == targetId:
+					target = enemy.position;
+					targetMiddleOfEnemy = target;
+		area.queue_free()
 
 func _on_timer_shoot_timeout() -> void:
 	ableToShoot = true;
-
 
 func _on_navigation_agent_2d_velocity_computed(safe_velocity: Vector2) -> void:
 	var _t = self;

@@ -30,13 +30,9 @@
    1. 森林：可以被工兵采集获得木材
    2. 金矿：可以被工兵采集获得金矿
 
-## 解决方案
+## 核心玩法解决方案
 
-### 需求描述
-
-- 玩家可以通过在游戏界面进行框选操作来框选游戏对象
-
-### 实现思路
+### 框选游戏对象
 
 - **PhysicsShapeQueryParameters2D** 类进行2D游戏场景的查询操作，记作q
     `````` py
@@ -46,11 +42,7 @@
     ``````
 - **get_world_2d().direct_space_state.intersect_shape(q)** 执行查询操作返回2D世界中查询结果
 
-### 需求方案
-
-- 实现对选中游戏对象进行寻路与自动避障
-
-### 实现思路
+### 角色巡航避障
 
 - **NavigationAgent2D** 类进行导航代理，实现自动避障
 - 定义一个target变量表示移动的目标位置，当目标存在时就计算路径，目标不存在就原地不动
@@ -85,3 +77,32 @@
             result /= neighbors.size();
         return result.normalized();
     ``````
+
+### 角色行为分配
+
+- 将游戏角色行为分为6种行为：
+  - 开采木材
+  - 开采金矿
+  - 收获食物
+  - 创造建筑
+  - 攻击敌人
+  - 攻击敌人建筑
+  `````` py
+    ## 职业类型 
+    ## 用于判断当前所选中的工人是用来干什么的
+    const JOB = {
+        "building" = "building",
+        "chop_wood" = "chop_wood",
+        "mine_gold" = "mine_gold",
+        "farm" = "farm",
+        "attack_unit" = "attack_unit",
+        "attack_building" = "attack_building",
+    }
+  ``````
+- 在角色进行相应行为时对 **Global.newWorkerTargetJob** 进行相应赋值
+
+### 敌人AI行为
+
+- 敌人AI分为两种状态
+  - 闲置：敌人AI在部署位置原地待命
+  - 锁定：当角色靠近敌人一定距离，则敌人锁定角色兵攻击
